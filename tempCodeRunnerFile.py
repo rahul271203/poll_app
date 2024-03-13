@@ -1,2 +1,2 @@
 
-                icon = selected_icon.link,
+database.init_app(app) 

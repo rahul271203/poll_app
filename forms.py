@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_ckeditor import CKEditorField
-from wtforms import StringField, EmailField, PasswordField, SubmitField
+from wtforms import StringField, EmailField, PasswordField, SubmitField,URLField
 from wtforms.validators import DataRequired, Email, Length, ValidationError
 
 class LoginForm(FlaskForm):
@@ -18,3 +18,7 @@ class CommentForm(FlaskForm):
     head = StringField( validators=[DataRequired()], render_kw={"placeholder": "Enter heading"})
     body = CKEditorField('Body', validators=[DataRequired()])
     submit = SubmitField('Post poll',render_kw={"class": "btn btn-success"})
+    
+class DatabaseForm(FlaskForm):
+    icon_link = URLField(validators=[DataRequired()], render_kw={"placeholder": "Enter valid icon link"})
+    submit = SubmitField('Submit',render_kw={"class": "btn btn-primary"})

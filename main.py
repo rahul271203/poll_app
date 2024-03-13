@@ -1,10 +1,11 @@
 from flask import Flask,render_template,redirect,url_for,abort,request
 from flask_bootstrap import Bootstrap5
-from forms import LoginForm,RegisterForm,CommentForm
+from forms import LoginForm,RegisterForm,CommentForm,DatabaseForm
 from flask_ckeditor import CKEditor
 
 from flask_login import LoginManager,UserMixin,login_user,logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.orm import relationship,DeclarativeBase,Mapped,mapped_column
@@ -13,6 +14,8 @@ from sqlalchemy import Integer, String, Float
 import random
 import requests
 from datetime import datetime
+import os
+from functools import wraps
 
 logged_in = 0
 not_registering = 1
@@ -37,15 +40,15 @@ def load_user(user_id):
 
 def admin_only(function):
     @wraps(function)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args,**kwargs):
         if current_user_id != 1:
             return abort(404)
-        return function
-            
+        return function(*args,**kwargs)
     return wrapper
 
+
 app.config['SECRET_KEY']="mrpvproject"
-app.config['SQLALCHEMY_DATABASE_URI'] = r"sqlite:///I:\My Drive\sem 4\Miniproject\semantic analysis\Polling_app\instance\polling.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI',"sqlite:///polling.db")
 
 database.init_app(app) 
 
@@ -96,10 +99,10 @@ def register():
             hashed_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256',salt_length=8)
             icons = [i for i in database.session.execute(database.select(icon)).scalars().all()]
             print(icons)
-            selected_icon = random.choice(icons)
+            selected_icon = "null" if len(icons) == 0 else random.choice(icons).link
             new_user = User(
                 username = register_form_object.username.data,
-                icon = selected_icon.link,
+                icon = selected_icon,
                 email = register_form_object.email.data,
                 password = hashed_password,
                 created = datetime.now().strftime("%Y-%m-%d")
@@ -169,6 +172,7 @@ def home():
     login_form_object = LoginForm()
     quote = random.choice(requests.get(url = "https://type.fit/api/quotes").json())
     quote_text = f"'{quote['text']}' - {quote['author'].split(',')[0]}"
+    print(f"current user id is ---> {current_user_id}")
     return render_template('index.html',
                            quote = quote_text,
                            user_obj = user_obj,
@@ -210,7 +214,19 @@ def about():
     return render_template('about.html')
 
 
-
+@app.route('/db',methods = ['POST','GET'])
+@admin_only
+def database_control():
+    database_form = DatabaseForm()
+    if database_form.validate_on_submit():
+        new_icon = icon(link = database_form.icon_link.data)
+        database.session.add(new_icon)
+        database.session.commit()
+    return render_template('database_control.html',
+                           database_form = database_form,
+                           user_obj = user_obj,
+                           logged_in = logged_in,
+                           current_user_id = current_user_id)
 
 if __name__ == "__main__":
     app.run(debug=True)
