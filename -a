@@ -1,0 +1,23 @@
+[33mcommit 1b8be96218afd33352e0dcd854db476eb1c6ff19[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: rahul sharma <killbusyness@gmail.com>
+Date:   Tue Mar 12 00:26:29 2024 +0530
+
+    add procfile
+
+[33mcommit 4c1ffe2f64352705a79959952101c4ba498fe040[m
+Author: rahul sharma <killbusyness@gmail.com>
+Date:   Tue Mar 12 00:21:47 2024 +0530
+
+    chnage requirements.txt
+
+[33mcommit 7710762b6f847b282543ccc39f7a2c8ba1d9bd70[m
+Author: rahul sharma <killbusyness@gmail.com>
+Date:   Tue Mar 12 00:20:59 2024 +0530
+
+    change requirements.txt
+
+[33mcommit e900b777258940e9606c05efe4aa26af4549a379[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: rahul sharma <killbusyness@gmail.com>
+Date:   Tue Mar 12 00:06:39 2024 +0530
+
+    first_commit

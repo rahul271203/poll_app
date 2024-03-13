@@ -1,0 +1,16 @@
+make comments which have buttons for 
+upvote 
+downvote 
+save
+reply
+add some content in the comment and in the replies
+add user icon and uername beside the usericon 
+add add some replies so that when the user clicks on the reply button all the replies should get reavealed
+when the user clicks the upvote button it should increment by one 
+when the user click the downvote button it should decrement by one 
+user can either upvote or downvote
+when the user have already upvoted and he downvotes the comment then the upvote should decrease by one
+when the user have already downvoted and he upvotes the comment then the downvote should decrease by one
+
+mkae it look beaufitul with curvy edges
+dont add upvote,downvote,save and reply as text for button instead add symbol for each 
