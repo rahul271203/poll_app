@@ -1,2 +1,2 @@
 
-database.init_app(app) 
+            entered_password = request.form.get('password')

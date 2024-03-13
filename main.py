@@ -189,6 +189,7 @@ def profile():
     
 @app.route('/new_comment',methods = ['GET','POST'])
 def new_comment():
+    login_form_object = LoginForm()
     comment_form = CommentForm()
     if comment_form.validate_on_submit():
         new_comment = Comment(
@@ -197,26 +198,31 @@ def new_comment():
         )
         database.session.add(new_comment)
         database.session.commit()
-        print("user added sucessfully")
         return redirect(url_for("home"))
     return render_template('new_comment.html',
                            comment_form = comment_form,
                            logged_in = logged_in,
-                           user_obj = user_obj) 
+                           user_obj = user_obj,
+                           login_form = login_form_object,
+                           current_user_id = current_user_id) 
     
 @app.route('/contact')
 def contact():
+    login_form_object = LoginForm()
     return render_template('contact.html',
                            user_obj = user_obj,
                            logged_in = logged_in,
-                           current_user_id = current_user_id)
+                           current_user_id = current_user_id,
+                           login_form = login_form_object)
 
 @app.route('/about')
 def about():
+    login_form_object = LoginForm()
     return render_template('about.html',
                            user_obj = user_obj, 
                            logged_in = logged_in,
-                           current_user_id = current_user_id)
+                           current_user_id = current_user_id,
+                           login_form = login_form_object)
 
 
 @app.route('/db',methods = ['POST','GET'])
