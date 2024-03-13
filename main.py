@@ -99,7 +99,7 @@ def register():
             hashed_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256',salt_length=8)
             icons = [i for i in database.session.execute(database.select(icon)).scalars().all()]
             print(icons)
-            selected_icon = "null" if len(icons) == 0 else random.choice(icons).link
+            selected_icon = "https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg" if len(icons) == 0 else random.choice(icons).link
             new_user = User(
                 username = register_form_object.username.data,
                 icon = selected_icon,
@@ -183,12 +183,13 @@ def home():
 @app.route('/profile')
 def profile():
     return render_template('profile.html',
-                           user_obj = user_obj)
+                           user_obj = user_obj,
+                           logged_in = logged_in,
+                           current_user_id = current_user_id)
     
 @app.route('/new_comment',methods = ['GET','POST'])
 def new_comment():
     comment_form = CommentForm()
-    login_form_object = LoginForm()
     if comment_form.validate_on_submit():
         new_comment = Comment(
             head = comment_form.head.data,
@@ -200,18 +201,22 @@ def new_comment():
         return redirect(url_for("home"))
     return render_template('new_comment.html',
                            comment_form = comment_form,
-                           user_obj = user_obj,
                            logged_in = logged_in,
-                           login_form = login_form_object, 
-                           current_user_id = current_user_id) 
+                           user_obj = user_obj) 
     
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')
+    return render_template('contact.html',
+                           user_obj = user_obj,
+                           logged_in = logged_in,
+                           current_user_id = current_user_id)
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about.html',
+                           user_obj = user_obj, 
+                           logged_in = logged_in,
+                           current_user_id = current_user_id)
 
 
 @app.route('/db',methods = ['POST','GET'])
