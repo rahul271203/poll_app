@@ -50,7 +50,7 @@ def admin_only(function):
 
 
 app.config['SECRET_KEY']="mrpvproject"
-app.config['SQLALCHEMY_DATABASE_URI'] = r"sqlite:///I:\My Drive\sem 4\Miniproject\semantic analysis\Polling_app\instance\polling.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI',"sqlite:///polling.db")
 
 database.init_app(app) 
 
