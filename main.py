@@ -49,7 +49,7 @@ def admin_only(function):
     return wrapper
 
 
-app.config['SECRET_KEY']="mrpvproject"
+app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI',"sqlite:///polling.db")
 
 database.init_app(app) 
