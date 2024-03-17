@@ -1,6 +1,6 @@
 
 {% from "bootstrap5/form.html" import render_form %}
-{% include "header.html" %}
+{% include "headers.html" %}
 <header
   class="masthead"
   style="background-image: url('https://img.freepik.com/free-photo/flat-lay-desk-arrangement-with-empty-notepad-blue-background_23-2148513378.jpg?t=st=1710085876~exp=1710089476~hmac=e8ec46be1b6e3d8270596dbdcd5f17230025dd2f6f3bea474234e96f3f5e316b&w=1380')"
@@ -21,10 +21,20 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        <form method = 'post' action = "{{ url_for('register') }}">
+        <form method='post' action="{{ url_for('register') }}" class="register-form"> <!-- Added class "register-form" -->
           {% if error %}
-              <p class = error style="color:red">{{ error }}</p>
-          {%  endif %}
+              <p style="color: #ff4d4d; /* Red color for error message */ 
+              font-size: 16px; /* Larger font size */ 
+              font-weight: bold; /* Bold text */ 
+              background-color: #ffe6e6; /* Light red background color */ 
+              padding: 10px; /* Padding around the error message */ 
+              border-radius: 5px; /* Rounded corners */ 
+              border: 1px solid #ff9999; /* Border around the error message */ 
+              margin-bottom: 10px; /* Margin below the error message */">
+              {{ error }}
+              </p>
+          {% endif %}
+
           {{  render_form(register_form) }}
         </form>
       </div>

@@ -3,13 +3,15 @@ from flask_bootstrap import Bootstrap5
 from forms import LoginForm,RegisterForm,CommentForm,DatabaseForm
 from flask_ckeditor import CKEditor
 
-from flask_login import LoginManager,UserMixin,login_user,logout_user
+from flask_login import LoginManager,UserMixin,login_user,logout_user,current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.orm import relationship,DeclarativeBase,Mapped,mapped_column
 from sqlalchemy import Integer, String, Float
+
+from flask_gravatar import Gravatar
 
 import random
 import requests
@@ -41,14 +43,14 @@ def load_user(user_id):
 def admin_only(function):
     @wraps(function)
     def wrapper(*args,**kwargs):
-        if current_user_id != 1:
+        if current_user.id != 1:
             return abort(404)
         return function(*args,**kwargs)
     return wrapper
 
 
 app.config['SECRET_KEY']="mrpvproject"
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI',"sqlite:///polling.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = r"sqlite:///I:\My Drive\sem 4\Miniproject\semantic analysis\Polling_app\instance\polling.db"
 
 database.init_app(app) 
 
@@ -64,19 +66,28 @@ class User(UserMixin, database.Model):
     password : Mapped[str]= mapped_column(String(50))
     created: Mapped[str] = mapped_column(String(50), nullable=True)
     
-    # Corrected the relationship definition
-    # comments = relationship("Comment", backref ="comment_by")
+    comments = relationship("Comment",back_populates = "comment_author")
+    subcomments = relationship("Subcomment",back_populates = "subcomment_author")
 
+    
 class Comment(database.Model):
     __tablename__ = "Comment"
     id : Mapped[int] = mapped_column(Integer, primary_key=True)
-    upvote : Mapped[int]= mapped_column(Integer, nullable=True) #make it false later
-    downvote : Mapped[int]= mapped_column(Integer, nullable=True)
-    body : Mapped[str]= mapped_column(String(5000))
-    head : Mapped[str]= mapped_column(String(150))
+    upvote : Mapped[int] = mapped_column(Integer, nullable=True) #make it false later
+    downvote : Mapped[int] = mapped_column(Integer, nullable=True)
+    body : Mapped[str] = mapped_column(String(5000))
+    head : Mapped[str] = mapped_column(String(150))
+    bg_image : Mapped[str] = mapped_column(String(900), nullable=True) 
+    userId : Mapped[int] = mapped_column(Integer, database.ForeignKey("user.id"))
     
-    # user_id : Mapped[int] = mapped_column(Integer, database.ForeignKey('user.id'))  
-    # comment_by = relationship('User', backref ='Comment')
+    comment_author = relationship("User", back_populates="comments")
+    
+class Subcomment(database.Model):
+    __tablename__ = "Subcomment"
+    id : Mapped[int] = mapped_column(Integer, primary_key=True)
+    body : Mapped[str] = mapped_column(String(5000))
+    user_id : Mapped[str] = mapped_column(Integer, database.ForeignKey("user.id"))
+    subcomment_author = relationship("User", back_populates="subcomments")
     
 class icon(database.Model):
     __tablename__ = "icon"
@@ -89,17 +100,19 @@ with app.app_context():
 
 @app.route('/register',methods = ['GET','POST'])
 def register():
-    global not_registering,current_user_id,user_obj
+    global not_registering,current_user_id,user_obj,logged_in
     not_registering = 0
     register_form_object = RegisterForm()
+    print("this is registering")
     if register_form_object.validate_on_submit():
         entred_email = request.form.get('email')
+        print("this part")
         user_email = database.session.execute(database.select(User).where(User.email == entred_email)).scalar()
         if user_email == None:
             hashed_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256',salt_length=8)
             icons = [i for i in database.session.execute(database.select(icon)).scalars().all()]
-            print(icons)
             selected_icon = "https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg" if len(icons) == 0 else random.choice(icons).link
+            print(selected_icon)
             new_user = User(
                 username = register_form_object.username.data,
                 icon = selected_icon,
@@ -108,9 +121,14 @@ def register():
                 created = datetime.now().strftime("%Y-%m-%d")
             )
             user_obj = new_user
+            logged_in = 1
+            print("here !!!!!!!")
+            current_user_id = user_obj.id
             database.session.add(new_user)
             database.session.commit()
+            login_user(new_user)
             print("user added sucessfully")
+            
             return redirect(url_for("home"))
         else:
             error = "This account already exists, Please try another one"
@@ -125,7 +143,7 @@ def register():
 
 @app.route('/login_user',methods = ['GET','POST'])
 def login():
-    global logged_in,current_user_id,user_obj
+    global logged_in,user_obj,current_user_id
     form_instance = LoginForm()
     if form_instance.validate_on_submit():
         entred_email = request.form.get('email')
@@ -137,38 +155,34 @@ def login():
                 logged_in = 1
                 print(f"login method logged_in = {logged_in}")
                 current_user_id = user.id
+                print(f"here!!!!!!!!! {current_user_id}")
                 user_obj = user
                 return redirect(url_for('home'))
             else:
                 print("wrong pass")
                 error = "Wrong password"
                 return render_template('index.html',
-                                       current_user_id = current_user_id,
-                                       logged_in = logged_in,
-                                       login_form = form_instance,
-                                       error = error)
+                           login_form = form_instance,                           
+                           user_obj = user_obj,
+                           logged_in = logged_in,
+                           current_user_id = current_user_id,                          
+                           error = error)
         else:
             print("no account")
             error = "No account by this name"
             print(current_user_id)
             return render_template('index.html',
-                                   current_user_id = current_user_id,
-                                   logged_in = logged_in,
-                                   login_form = form_instance,
-                                   error = error)    
+                           login_form = form_instance,                           
+                           user_obj = user_obj,
+                           logged_in = logged_in,
+                           current_user_id = current_user_id,                          
+                           error = error)    
     return redirect(url_for('home'))
 
-@app.route('/logout')
-def logout():
-    global logged_in, current_user_id
-    logged_in = 0
-    current_user_id = 0
-    logout_user()
-    return redirect(url_for('home'))
-
-@app.route('/')
+@app.route('/') 
 def home():
     global current_user_id,logged_in,user_obj
+    all_comments = database.session.execute(database.select(Comment)).scalars().all()
     login_form_object = LoginForm()
     quote = random.choice(requests.get(url = "https://type.fit/api/quotes").json())
     quote_text = f"'{quote['text']}' - {quote['author'].split(',')[0]}"
@@ -178,7 +192,18 @@ def home():
                            user_obj = user_obj,
                            logged_in = logged_in,
                            login_form = login_form_object, 
-                           current_user_id = current_user_id)
+                           current_user_id = current_user_id,
+                           comments = all_comments)
+
+@app.route('/logout')
+def logout():
+    global logged_in, current_user_id
+    logged_in = 0
+    current_user_id = 0
+    logout_user()
+    return redirect(url_for('home'))
+
+
     
 @app.route('/profile')
 def profile():
@@ -194,7 +219,9 @@ def new_comment():
     if comment_form.validate_on_submit():
         new_comment = Comment(
             head = comment_form.head.data,
-            body = comment_form.body.data
+            body = comment_form.body.data,
+            bg_image = comment_form.bg_image.data,
+            userId = current_user.id 
         )
         database.session.add(new_comment)
         database.session.commit()
@@ -205,7 +232,17 @@ def new_comment():
                            user_obj = user_obj,
                            login_form = login_form_object,
                            current_user_id = current_user_id) 
-    
+
+@app.route('/comment/<int:comment_id>')
+def show_comment(comment_id):
+    global logged_in
+    chosen_comment = database.session.execute(database.select(Comment).where(Comment.id == comment_id)).scalar()
+    print(chosen_comment.bg_image)
+    return render_template('show_comment.html',
+                           logged_in = logged_in,
+                           user_obj = user_obj,
+                           comment = chosen_comment)
+  
 @app.route('/contact')
 def contact():
     login_form_object = LoginForm()

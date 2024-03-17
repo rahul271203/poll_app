@@ -17,6 +17,7 @@ class RegisterForm(FlaskForm):
 class CommentForm(FlaskForm):
     head = StringField( validators=[DataRequired()], render_kw={"placeholder": "Enter heading"})
     body = CKEditorField('Body', validators=[DataRequired()])
+    bg_image = URLField('Enter backgroud image URL',render_kw={"placeholder": "Enter backgroud image URL"})
     submit = SubmitField('Post poll',render_kw={"class": "btn btn-success"})
     
 class DatabaseForm(FlaskForm):

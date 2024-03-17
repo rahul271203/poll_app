@@ -1,36 +1,99 @@
-/*!
-* Start Bootstrap - Clean Blog v6.0.9 (https://startbootstrap.com/theme/clean-blog)
-* Copyright 2013-2023 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-clean-blog/blob/master/LICENSE)
-*/
 
 
 
-// Function to toggle the display of replies
-function toggleReplies(button) {
-    var commentContainer = button.closest('.comment-container');
-    var repliesContainer = commentContainer.querySelector('.replies-container');
-    repliesContainer.style.display = (repliesContainer.style.display === 'none') ? 'block' : 'none';
+function toggleReply(button) {
+var replyInput = button.nextElementSibling;
+replyInput.style.display = (replyInput.style.display === 'none') ? 'block' : 'none';
 }
 
-function toggleVote(button, action) {
-    var commentContainer = button.closest('.comment-container');
-    var upvoteButton = commentContainer.querySelector('.upvote-button');
-    var downvoteButton = commentContainer.querySelector('.downvote-button');
-    
-    // Get the current counts or set to 0 if not a valid number
-    var upvoteCount = parseInt(upvoteButton.innerText) || 0;
-    var downvoteCount = parseInt(downvoteButton.innerText) || 0;
+function saveReply(button) {
+var replyInput = button.previousElementSibling;
+var replyText = replyInput.value.trim();
+if (replyText !== '') {
+    var parentComment = button.closest('.comment-container');
+    var repliesContainer = parentComment.querySelector('.replies-container');
 
-    if (action === 'up') {
-        upvoteCount++;
-        upvoteButton.innerHTML = `&#9650; ${upvoteCount}`;
-        downvoteButton.innerHTML = `&#9660; ${downvoteCount}`;
-    } else if (action === 'down') {
-        downvoteCount++;
-        downvoteButton.innerHTML = `&#9660; ${downvoteCount}`;
-        upvoteButton.innerHTML = `&#9650; ${upvoteCount}`;
+    var replyContainerId = 'reply-' + Date.now(); // Generate unique ID for reply container
+    var replyContainer = `
+    <div class="comment-container" id="${replyContainerId}">
+        <div class="user-info">
+        <div class="user-icon"></div>
+        <div class="username">Sunita Patel</div>
+        </div>
+        <div class="comment-content">${replyText}</div>
+        <button class="toggle-replies-button" onclick="toggleReplies(this, '${replyContainerId}')">+</button>
+        <span class="reply-symbol" onclick="toggleReply(this)">↵</span>
+        <div class="reply-input" style="display:none;">
+        <textarea placeholder="Your reply" class="minimal-input"></textarea>
+        <button onclick="saveReply(this)">Save</button>
+        </div>
+        <div class="replies-container">
+        <!-- Nested replies will go here -->
+        </div>
+    </div>
+    `;
+
+    repliesContainer.innerHTML += replyContainer;
+    replyInput.value = ''; // Clear input field after saving reply
+}
+}
+
+function toggleReplies(button, commentId) {
+var repliesContainer = document.getElementById(commentId).querySelector('.replies-container');
+var replies = repliesContainer.querySelectorAll('.comment-container');
+
+for (var i = 0; i < replies.length; i++) {
+    replies[i].style.display = (replies[i].style.display === 'none') ? 'block' : 'none';
+}
+
+// Change button text based on replies visibility
+button.textContent = (replies[0].style.display === 'none') ? '+' : '-';
+}
+
+// Function to toggle comments visibility
+document.getElementById('toggle-comments').addEventListener('click', function() {
+var comments = document.querySelectorAll('.comment-container');
+for (var i = 0; i < comments.length; i++) {
+    comments[i].style.display = (comments[i].style.display === 'none') ? 'block' : 'none';
+}
+});
+
+function vote(voteButton) {
+var voteCountSpan = voteButton.parentElement.querySelector('.vote-count');
+var voteCount = parseInt(voteCountSpan.textContent);
+
+if (voteButton.classList.contains('upvote')) {
+    voteCount++;
+} else if (voteButton.classList.contains('downvote')) {
+    voteCount--;
+}
+
+voteCountSpan.textContent = voteCount;
+}
+
+
+function vote(voteButton) {
+var voteCountSpan = voteButton.parentElement.querySelector('.vote-count');
+var voteCount = parseInt(voteCountSpan.textContent);
+
+var upvoteButton = voteButton.parentElement.querySelector('.upvote');
+var downvoteButton = voteButton.parentElement.querySelector('.downvote');
+
+if (voteButton.classList.contains('upvote')) {
+    if (!upvoteButton.classList.contains('active')) {
+    voteCount++;
+    voteCountSpan.textContent = voteCount;
+    upvoteButton.classList.add('active');
+    downvoteButton.classList.remove('active');
     }
+} else if (voteButton.classList.contains('downvote')) {
+    if (!downvoteButton.classList.contains('active')) {
+    voteCount--;
+    voteCountSpan.textContent = voteCount;
+    downvoteButton.classList.add('active');
+    upvoteButton.classList.remove('active');
+    }
+}
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -58,4 +121,18 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 })
 
+//This is for the side nav bar opening and closing button
+document.addEventListener("DOMContentLoaded", function () {
+    const leftNav = document.querySelector('.sidenav.left');
+    const rightNav = document.querySelector('.sidenav.right');
 
+    // Toggle left navigation panel
+    document.querySelector('#openLeftNav').addEventListener('click', function () {
+      leftNav.classList.toggle('open');
+    });
+
+    // Toggle right navigation panel
+    document.querySelector('#openRightNav').addEventListener('click', function () {
+      rightNav.classList.toggle('open');
+    });
+  });

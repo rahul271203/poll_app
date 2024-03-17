@@ -1,4 +1,4 @@
-{% include "header.html" %}
+{% include "headers.html" %}
         <!-- Page Header-->
         <header class="masthead" 
         style="background-image: url('https://img.freepik.com/free-vector/alien-planet-landscape-cosmic-background-deserted-coastline-with-mountains-view-glowing-cleft-stars-shining-spheres-space-extraterrestrial-pc-game-backdrop-cartoon-vector-illustration_107791-8012.jpg?t=st=1710166061~exp=1710169661~hmac=e5f30cfff4c6d45a617074f6385acae70b9f3853d1961c607c8491daa18385b7&w=1380')">
@@ -14,181 +14,46 @@
             </div>
         </header>
         <!-- Main Content-->
-        <div class="container px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                    <div class="comment-container">
+    </style>
+</head>
+<body>
 
-                        <!-- User icon and username -->
-                        <div class="user-info">
-                            <div class="user-icon"></div>
-                            <div class="username">JohnDoe</div>
-                        </div>
-                
-                        <!-- Comment content -->
-                        <div class="comment-content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget justo ut massa laoreet dapibus ac id
-                            turpis.
-                        </div>
-                
-                        <!-- Voting buttons with curvy edges -->
-                        <div class="voting-buttons">
-                            <!-- Upvote button with up arrow symbol -->
-                            <button class="upvote-button" onclick="toggleVote(this, 'up')">&#9650;  </button>
-                
-                            <!-- Downvote button with down arrow symbol -->
-                            <button class="downvote-button" onclick="toggleVote(this, 'down')">&#9660;</button>
-                        </div>
-                
-                        <!-- Save and Reply buttons with curvy edges -->
-                        <div class="interaction-buttons">
-                            <!-- Save button with bookmark symbol -->
-                            <button class="save-button">&#128278;</button>
-                
-                            <!-- Reply button with speech bubble symbol -->
-                            <button class="reply-button" onclick="toggleReplies(this)">&#128172;</button>
-                        </div>
-                
-                        <!-- Replies container with initially hidden content -->
-                        <div class="replies-container" style="display: none;">
-                            <!-- Reply 1 -->
-                            <div class="comment-container">
-                                <div class="user-info">
-                                    <div class="user-icon"></div>
-                                    <div class="username">JaneDoe</div>
-                                </div>
-                                <div class="comment-content">Great comment!</div>
-                            </div>
-                
-                            <!-- Reply 2 -->
-                            <div class="comment-container">
-                                <div class="user-info">
-                                    <div class="user-icon"></div>
-                                    <div class="username">AliceSmith</div>
-                                </div>
-                                <div class="comment-content">I agree!</div>
-                            </div>
-                        </div>
-                
-                    </div>
 
-                    <div class="comment-container">
 
-                        <!-- User icon and username -->
-                        <div class="user-info">
-                            <div class="user-icon"></div>
-                            <div class="username">JohnDoe</div>
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            {% for comment in comments %}
+            
+            <a href = "{{ url_for('show_comment',comment_id = comment.id) }}">
+                <div class="comment-container ">
+                    <div class="user-info">
+                        <img src = "{{comment.comment_author.icon}}" class="user-icon" />
+                        <div class="username">{{comment.comment_author.username}}</div></div>
+                        <div class="comment-content"><b><h4>{{ comment.head }}</h4></b></div>
+                        <div class="comment-content">{{ comment.body[:250]|safe}}.....</div>
+                        <div class="votes">
+                        <span class="upvote" onclick="vote(this)">▲ {{ comment.upvote }}</span>
+                        <span class="vote-count">0</span>
+                        <span class="downvote" onclick="vote(this)">▼</span>
+                        <span class="reply-button">↩</span> <!-- Reply button symbol -->
+                        <span class="save-button"><img src="https://cdn-icons-png.flaticon.com/128/9834/9834913.png" height="19" /></span> <!-- Save button symbol -->
                         </div>
-                
-                        <!-- Comment content -->
-                        <div class="comment-content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget justo ut massa laoreet dapibus ac id
-                            turpis.
-                        </div>
-                
-                        <!-- Voting buttons with curvy edges -->
-                        <div class="voting-buttons">
-                            <!-- Upvote button with up arrow symbol -->
-                            <button class="upvote-button" onclick="toggleVote(this, 'up')">&#9650;  </button>
-                
-                            <!-- Downvote button with down arrow symbol -->
-                            <button class="downvote-button" onclick="toggleVote(this, 'down')">&#9660;</button>
-                        </div>
-                
-                        <!-- Save and Reply buttons with curvy edges -->
-                        <div class="interaction-buttons">
-                            <!-- Save button with bookmark symbol -->
-                            <button class="save-button">&#128278;</button>
-                
-                            <!-- Reply button with speech bubble symbol -->
-                            <button class="reply-button" onclick="toggleReplies(this)">&#128172;</button>
-                        </div>
-                
-                        <!-- Replies container with initially hidden content -->
-                        <div class="replies-container" style="display: none;">
-                            <!-- Reply 1 -->
-                            <div class="comment-container">
-                                <div class="user-info">
-                                    <div class="user-icon"></div>
-                                    <div class="username">JaneDoe</div>
-                                </div>
-                                <div class="comment-content">Great comment!</div>
-                            </div>
-                
-                            <!-- Reply 2 -->
-                            <div class="comment-container">
-                                <div class="user-info">
-                                    <div class="user-icon"></div>
-                                    <div class="username">AliceSmith</div>
-                                </div>
-                                <div class="comment-content">I agree!</div>
-                            </div>
-                        </div>
-                
-                    </div>
-
-                    <div class="comment-container">
-
-                        <!-- User icon and username -->
-                        <div class="user-info">
-                            <div class="user-icon"></div>
-                            <div class="username">JohnDoe</div>
-                        </div>
-                
-                        <!-- Comment content -->
-                        <div class="comment-content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget justo ut massa laoreet dapibus ac id
-                            turpis.
-                        </div>
-                
-                        <!-- Voting buttons with curvy edges -->
-                        <div class="voting-buttons">
-                            <!-- Upvote button with up arrow symbol -->
-                            <button class="upvote-button" onclick="toggleVote(this, 'up')">&#9650;  </button>
-                
-                            <!-- Downvote button with down arrow symbol -->
-                            <button class="downvote-button" onclick="toggleVote(this, 'down')">&#9660;</button>
-                        </div>
-                
-                        <!-- Save and Reply buttons with curvy edges -->
-                        <div class="interaction-buttons">
-                            <!-- Save button with bookmark symbol -->
-                            <button class="save-button">&#128278;</button>
-                
-                            <!-- Reply button with speech bubble symbol -->
-                            <button class="reply-button" onclick="toggleReplies(this)">&#128172;</button>
-                        </div>
-                
-                        <!-- Replies container with initially hidden content -->
-                        <div class="replies-container" style="display: none;">
-                            <!-- Reply 1 -->
-                            <div class="comment-container">
-                                <div class="user-info">
-                                    <div class="user-icon"></div>
-                                    <div class="username">JaneDoe</div>
-                                </div>
-                                <div class="comment-content">Great comment!</div>
-                            </div>
-                
-                            <!-- Reply 2 -->
-                            <div class="comment-container">
-                                <div class="user-info">
-                                    <div class="user-icon"></div>
-                                    <div class="username">AliceSmith</div>
-                                </div>
-                                <div class="comment-content">I agree!</div>
-                            </div>
-                        </div>
-                
-                    </div>
-                        
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Pager-->
-                    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+            
                 </div>
-            </div>
+            </a>
+            {% endfor %}
+            <!-- Divider-->
+            <hr class="my-4" />
+            <!-- Pager-->
         </div>
-
+    </div>
+</div>
+<div class="sticky-circle-container">
+    <a href="{{ url_for('new_comment') }}">
+        <div class="plus-symbol"><b>+</b></div>
+        <div class="add-post-label"> <b>POST</b> </div>
+    </a>
+</div>
         
 {% include "footer.html" %}

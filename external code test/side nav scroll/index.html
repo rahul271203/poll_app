@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Side Navigation</title>
+  <style>
+    /* Side Navigation Styles */
+    .sidenav {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      top: 0;
+      overflow-y: auto; /* Enable vertical scrolling */
+      background-color: #f0f0f0;
+      padding-top: 20px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+      transition: width 0.5s ease; /* Add transition effect for width changes */
+    }
+
+    .sidenav.left {
+      left: -250px; /* Initially hide left navigation panel */
+    }
+
+    .sidenav.right {
+      right: -250px; /* Initially hide right navigation panel */
+    }
+
+    .sidenav a {
+      padding: 10px 15px;
+      text-decoration: none;
+      font-size: 18px;
+      color: #000;
+      display: block;
+      transition: background-color 0.3s ease; /* Add transition effect for background color */
+    }
+
+    .sidenav a:hover {
+      background-color: #ffc107; /* Change background color on hover */
+      color: #000; /* Change text color on hover */
+    }
+
+    /* Custom scrollbar styles */
+    .sidenav::-webkit-scrollbar {
+      width: 8px; /* Set scrollbar width */
+      background-color: #f0f0f0; /* Set scrollbar background color */
+    }
+
+    .sidenav::-webkit-scrollbar-thumb {
+      background: #888; /* Set thumb color */
+      border-radius: 4px; /* Add border radius */
+      transition: background-color 0.3s ease; /* Add transition effect for background color */
+    }
+
+    .sidenav::-webkit-scrollbar-thumb:hover {
+      background-color: #555; /* Change thumb color on hover */
+    }
+
+    /* Animation for opening and closing side nav */
+    .sidenav.open.left {
+      left: 0;
+    }
+
+    .sidenav.open.right {
+      right: 0;
+    }
+  </style>
+</head>
+<body>
+
+<button id="openLeftNav">Open Left Nav</button>
+<button id="openRightNav">Open Right Nav</button>
+
+<div class="sidenav left">
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <!-- Add more left navigation links if needed -->
+</div>
+
+<div class="sidenav right">
+  <a href="#">Right Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+  <a href="#">Left Link 1</a>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const leftNav = document.querySelector('.sidenav.left');
+    const rightNav = document.querySelector('.sidenav.right');
+
+    // Toggle left navigation panel
+    document.querySelector('#openLeftNav').addEventListener('click', function () {
+      leftNav.classList.toggle('open');
+    });
+
+    // Toggle right navigation panel
+    document.querySelector('#openRightNav').addEventListener('click', function () {
+      rightNav.classList.toggle('open');
+    });
+  });
+</script>
+
+</body>
+</html>
