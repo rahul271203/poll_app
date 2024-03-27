@@ -196,6 +196,7 @@ header.masthead .post-heading .meta a {
   backdrop-filter: blur(10px);
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(10px);
   z-index: 999; /* Ensure the overlay is on top of other content */
 }
 
